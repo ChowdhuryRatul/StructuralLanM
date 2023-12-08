@@ -5,6 +5,6 @@ List of scripts
 
 3. sample_energy_cal #interaction energy calculation between EF hand 2 and metal ion (Nd3+)
 
-4. Figure4e.ipnyb #ramachandran angle plot, with sample input files rama_y.xvg and rama_nd.xvg
+4. fig_4e.ipnyb #ramachandran angle plot, with sample input files rama_y.xvg and rama_nd.xvg
  
  
