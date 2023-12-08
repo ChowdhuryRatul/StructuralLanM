@@ -6,5 +6,5 @@ List of scripts
 3. sample_energy_cal #interaction energy calculation between EF hand 2 and metal ion (Nd3+)
 
 4. fig_4e.ipnyb #ramachandran angle plot, with sample input files rama_y.xvg and rama_nd.xvg
- 
+5. gmx rama -f output_from_md.xtc -s output_from_md.tpr -o rama.xvg # gromacs command to calculate ramachandran angles for MD trajectory 
  
