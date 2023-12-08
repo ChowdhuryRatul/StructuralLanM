@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Copy/paste this job script into a text file and submit with the command:
+#    sbatch thefilename
+
+#SBATCH --time=100:59:00   # walltime limit (HH:MM:SS)
+#SBATCH --nodes=1   # number of nodes
+#SBATCH --ntasks-per-node=36   # 36 processor core(s) per node 
+#SBATCH --job-name="job_name"
+#SBATCH --mail-user=userid@xyz.com   # email address
+#SBATCH --mail-type=BEGIN
+#SBATCH --mail-type=END
+#SBATCH --mail-type=FAIL
+#SBATCH --output="job_name.out" # job standard output file (%j replaced by job id)
+#SBATCH --error="job_name.err" # job standard error file (%j replaced by job id)
+
+# LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
+module load gromacs/2023-cuda11.6.2-cpu-nompi
+gmx editconf -f lanm_nd.pdb -o lanm_nd_newbox.gro -c -d 1.0 -bt cubic
+gmx grompp -f ions.mdp -c lanm_nd_newbox.gro -p topol.top -o ions.tpr
+gmx genion -s ions.tpr -o lanm_nd_ions.gro -p topol.top -pname NA -nname CL -neutral
+gmx grompp -f minim.mdp -c lanm_nd_ions.gro -p topol.top -o em.tpr
+gmx mdrun -deffnm em
+gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
+gmx mdrun -deffnm nvt
+gmx grompp -f md_nvt.mdp -c nvt.gro -t nvt.cpt -p topol.top -o md_500ns.tpr
+gmx mdrun -deffnm md_500ns
+gmx mdrun -s md_500ns.tpr -deffnm md_500ns -cpi md_500ns.cpt -append
+gmx trjconv -s md_500ns.tpr -f md_500ns.xtc -o md_500ns_noPBC.xtc -pbc mol -center <<EOF
+1
+0
+EOF

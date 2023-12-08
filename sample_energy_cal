@@ -1,0 +1,13 @@
+gmx make_ndx -f md_500ns.tpr -o EF2_index.ndx <<EOF
+r 59-70 |r ND
+q
+EOF
+gmx grompp -f prod2.mdp -c md_500ns.gro -p topol.top -o prod2.tpr -n EF2_index.ndx
+gmx mdrun -v -nt 1 -s prod2.tpr -rerun md_500ns.xtc  -e EF2_energy.edr
+gmx energy -f EF2_energy.edr -s prod2.tpr -o EF2_energy.xvg <<EOF
+17
+18
+19
+20
+0
+EOF
